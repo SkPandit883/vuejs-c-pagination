@@ -24,7 +24,7 @@ export default {
         maxVisibleButtons: {
             type: Number,
             required: false,
-            default: 4
+            default: 3
         },
         totalPages: {
             type: Number,
@@ -125,15 +125,11 @@ export default {
                 });
             }
             if (this.currentPage === this.totalPages) {
-
-               for (let button = 0; button < this.maxVisibleButtons; button++) {
-                 console.log('yes')
-                 range[button].name = this.totalPages - (this.maxVisibleButtons-button-1)
-
-               }
+                for (let button = 0; button < this.maxVisibleButtons; button++) {
+                    range[button].name = this.totalPages - (this.maxVisibleButtons - button - 1)
+                }
             }
-            console.log('curren page', this.currentPage)
-            console.log('range',range)
+          
             return range;
         },
         isInFirstPage() {

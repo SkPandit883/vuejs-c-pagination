@@ -21,7 +21,7 @@
     </tbody>
   </table>
 
-  <c-pagination :totalPages="total" :perPage="2" :currentPage="currentPage" activeColor="green"
+  <c-pagination :totalPages="total" :perPage="2" :currentPage="currentPage" activeColor="red"
     height="50px" width="50px" fontSize="20px" color="black" @pagechanged="onPageChange" />
 </template>
 
@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     onPageChange(page) {
-      this.fetchTours({ "per_page": 2, 'page': page })
+      this.fetchTours({ "per_page": 4, 'page': page })
       this.currentPage = page;
     },
     fetchTours(params) {
@@ -59,7 +59,7 @@ export default {
     }
   },
   mounted() {
-    this.fetchTours({ "per_page": 2, 'page': 1 })
+    this.fetchTours({ "per_page": 4, 'page': 1 })
   },
 }
 </script>
