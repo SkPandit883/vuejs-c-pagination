@@ -1,35 +1,19 @@
 <template>
     <ul class="pagination center">
-
         <li class="pagination-item">
-
-            <button type="button" class="center" @click="onClickPreviousPage" :disabled="isInFirstPage"
+            <button v-html="preIcon" type="button" class="center" @click="onClickPreviousPage" :disabled="isInFirstPage"
                 :style="[isInFirstPage ? disbledStyle : '', buttonStyle]">
-
-                <img src="https://cdn.tradeinsur.com/assets/icon/grey-4-left.svg" alt="">
-
             </button>
-
         </li>
-
         <li v-for="page in pages" :key="page" class="pagination-item">
-
             <button type="button" class="center" @click="onClickPage(page.name)" :disabled="page.isDisabled"
-                :style="[isPageActive(page.name) ? activeStyle : '', buttonStyle]"> {{ page.name }} </button>
-
+                :style="[buttonStyle,isPageActive(page.name) ? activeStyle : '']"> {{ page.name }} </button>
         </li>
-
         <li class="pagination-item">
-
-            <button type="button" class="center left-arrow" @click="onClickNextPage" :disabled="isInLastPage"
+            <button v-html="nextIcon" type="button" class="center" @click="onClickNextPage" :disabled="isInLastPage"
                 :style="[isInLastPage ? disbledStyle : '', buttonStyle]">
-
-                <img src="https://cdn.tradeinsur.com/assets/icon/grey-4-left.svg" alt="">
-
             </button>
-
         </li>
-
     </ul>
 </template>
   
@@ -40,7 +24,7 @@ export default {
         maxVisibleButtons: {
             type: Number,
             required: false,
-            default: 3
+            default: 4
         },
         totalPages: {
             type: Number,
@@ -81,6 +65,16 @@ export default {
         color: {
             type: String,
             default: "#000000"
+        },
+        preIcon: {
+            type: String,
+            default: '<img class=" " src="https://cdn.tradeinsur.com/assets/icon/grey-4-left.svg" alt="">'
+
+        },
+        nextIcon: {
+            type: String,
+            default: '<img class="left-arrow" src="https://cdn.tradeinsur.com/assets/icon/grey-4-left.svg" alt="">'
+
         }
     },
     data() {
@@ -99,7 +93,7 @@ export default {
                 width: this.width,
                 borderRadius: "4px",
                 fontSize: this.fontSize,
-                color:this.color,
+                color: this.color,
                 border: "1px solid #e7e7e7",
                 fontWeight: 700
             }
@@ -124,15 +118,22 @@ export default {
         pages() {
             const range = [];
 
-            for (
-                let i = this.startPage; i <= Math.min(this.startPage + this.maxVisibleButtons - 1, this.totalPages); i++
-            ) {
+            for (let i = this.startPage; i <= Math.min(this.startPage + this.maxVisibleButtons - 1, this.totalPages); i++) {
                 range.push({
                     name: i,
                     isDisabled: i === this.currentPage
                 });
             }
-            console.log('paged', range)
+            if (this.currentPage === this.totalPages) {
+
+               for (let button = 0; button < this.maxVisibleButtons; button++) {
+                 console.log('yes')
+                 range[button].name = this.totalPages - (this.maxVisibleButtons-button-1)
+
+               }
+            }
+            console.log('curren page', this.currentPage)
+            console.log('range',range)
             return range;
         },
         isInFirstPage() {
