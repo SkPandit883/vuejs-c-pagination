@@ -5,9 +5,10 @@
                 :style="[isInFirstPage ? disbledStyle : '', buttonStyle]">
             </button>
         </li>
-        <li v-for="page in pages" :key="page" class="pagination-item">
+
+        <li v-for="(page, index) in pages" :key="index" class="pagination-item">
             <button type="button" class="center" @click="onClickPage(page.name)" :disabled="page.isDisabled"
-                :style="[buttonStyle,isPageActive(page.name) ? activeStyle : '']"> {{ page.name }} </button>
+                :style="[buttonStyle, isPageActive(page.name) ? activeStyle : '']"> {{ page.name }} </button>
         </li>
         <li class="pagination-item">
             <button v-html="nextIcon" type="button" class="center" @click="onClickNextPage" :disabled="isInLastPage"
@@ -101,36 +102,20 @@ export default {
     },
 
     computed: {
-        startPage() {
-            // When on the first page
-            if (this.currentPage === 1) {
-                return 1;
-            }
-
-            // When on the last page
-            if (this.currentPage === this.totalPages) {
-                return this.totalPages - this.maxVisibleButtons;
-            }
-
-            // When inbetween
-            return this.currentPage - 1;
+        totalButtons() {
+            return Math.min(this.maxVisibleButtons, this.totalPages);
         },
         pages() {
-            const range = [];
+            const range = []
+            let first = this.currentPage - Math.floor(this.totalButtons / 2);
+            first = Math.max(first, 1);
+            first = Math.min(first, this.totalPages - this.totalButtons + 1);
 
-            for (let i = this.startPage; i <= Math.min(this.startPage + this.maxVisibleButtons - 1, this.totalPages); i++) {
-                range.push({
-                    name: i,
-                    isDisabled: i === this.currentPage
-                });
-            }
-            if (this.currentPage === this.totalPages) {
-                for (let button = 0; button < this.maxVisibleButtons; button++) {
-                    range[button].name = this.totalPages - (this.maxVisibleButtons - button - 1)
-                }
-            }
-          
-            return range;
+            [...Array(this.totalButtons)].map((k, i) => range.push({
+                name: i + first,
+                isDisabled: i + first === this.currentPage
+            }));
+            return range
         },
         isInFirstPage() {
             return this.currentPage === 1;
@@ -154,15 +139,17 @@ export default {
         },
         onClickNextPage() {
             this.$emit('pagechanged', this.currentPage + 1);
+
         },
         onClickLastPage() {
             this.$emit('pagechanged', this.totalPages);
         }
-    }
+    },
+
 }
 </script>
   
-<style>
+<style scoped>
 .pagination {
     list-style-type: none;
 }
